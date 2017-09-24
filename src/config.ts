@@ -2,7 +2,7 @@
  *  The RequireJS Config File
  */
 require.config({ 
-  baseUrl: "src"
+  baseUrl: "dist"
 });
 
 
