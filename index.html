@@ -3,6 +3,13 @@
   <head> 
   </head>
   <body> 
+    <div data-bind="foreach: Providers"> 
+      <span data-bind="text: Name"></span><br/>
+      <div data-bind="foreach: Object.keys(LatestValues())"> 
+        <span data-bind="text: $data"></span>: <span data-bind="text: $parent.LatestValues()[$data]"></span><br/>
+      </div>
+    </div>
+
     <script src="lib/require.js" data-main="dist/config"></script>
   </body>
 </html>

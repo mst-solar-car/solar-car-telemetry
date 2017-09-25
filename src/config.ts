@@ -2,7 +2,10 @@
  *  The RequireJS Config File
  */
 require.config({ 
-  baseUrl: "dist"
+  baseUrl: "dist", 
+  paths: {
+    knockout: '../lib/knockout'
+  }
 });
 
 
@@ -10,6 +13,6 @@ require.config({
 /**
  * Load initial module
  */
-require(['SolarCarTelemetry'], (main) => {
-  new main();
+require(['knockout', 'SolarCarTelemetry'], (ko, main) => {
+  ko.applyBindings(new main());
 });

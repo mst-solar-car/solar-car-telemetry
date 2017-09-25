@@ -9,9 +9,17 @@ let registration: ITelemetryModuleRegistration = {
       Name: "Sample Data 1", 
       Key: "sample-data-1",
       Description: "Description of Sample Data 1", 
-      DataType: "int", 
+      DataType: TelemetryDataType.Float, 
       Units: "meters", 
-      Display: DisplayType.Graph
+      Default: 0,
+      Display: DisplayType.Table
+    }, 
+    { 
+      Name: "Sample Data 2", 
+      Key: "sample-data-2", 
+      DataType: TelemetryDataType.Float,
+      Display: DisplayType.Table, 
+      Default: -55
     }
   ]
 };

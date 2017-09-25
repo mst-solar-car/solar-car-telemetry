@@ -3,6 +3,14 @@
  */
 
 
+ enum TelemetryDataType { 
+  Integer, 
+  Float, 
+  Boolean, 
+  String, 
+  Image
+ }
+
 /**
  * Enum for how data should be represented
  */
@@ -23,3 +31,4 @@ enum GroupType {
   Table, 
   Graph
 }
+

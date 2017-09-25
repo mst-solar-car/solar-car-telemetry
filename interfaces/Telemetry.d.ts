@@ -30,11 +30,12 @@ interface ITelemetryDataRegistration {
   Name: string; 
   Key: string; // Unique Key to identify data
   Description?: string; // Optional description 
-  DataType: string; // Name of the type (int, string, float, boolean, etc) 
+  DataType: TelemetryDataType_t; // Name of the type (int, string, float, boolean, etc) 
   Units?: string; // Unit of this type, 
   Min?: any; // Minimum value this should be
   Max?: any; // Maximum value this should be
-  Display?: DataDisplayType; // Default = DisplayType.Table
+  Default?: any;
+  Display?: DisplayType_t; // Default = DisplayType.Table
 }
 
 
