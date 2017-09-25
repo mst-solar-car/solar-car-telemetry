@@ -6,5 +6,8 @@
         "target": "es2016",
         "watch": true
     }, 
-    "compileOnSave": true
+    "include": [ 
+        "interfaces/**/*",
+        "src/**/*"
+    ]
 }

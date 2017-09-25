@@ -10,6 +10,6 @@ require.config({
 /**
  * Load initial module
  */
-require(['polyfills'], () => {
-  
+require(['SolarCarTelemetry'], (main) => {
+  new main();
 });
