@@ -2,7 +2,7 @@
  *  The RequireJS Config File
  */
 require.config({ 
-  baseUrl: "dist", 
+  baseUrl: "build/scripts", 
   paths: {
     knockout: '../lib/knockout'
   }

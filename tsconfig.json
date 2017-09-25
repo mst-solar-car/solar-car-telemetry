@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
         "module": "amd",
-        "outDir": "dist",
         "rootDir": "src", 
+        "outDir": "build",
         "target": "es2016",
-        "watch": true
+        "watch": false
     }, 
     "include": [ 
         "interfaces/**/*",
