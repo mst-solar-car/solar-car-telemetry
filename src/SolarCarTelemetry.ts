@@ -1,4 +1,5 @@
 import "Utils"; 
+import "Enums";
 
 import ModuleLoader = require("framework/ModuleLoader");
 import TelemetryProvider = require("framework/TelemetryProvider");

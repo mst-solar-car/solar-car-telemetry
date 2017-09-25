@@ -10,7 +10,8 @@ let registration: ITelemetryModuleRegistration = {
       Key: "sample-data-1",
       Description: "Description of Sample Data 1", 
       DataType: "int", 
-      Units: "meters"
+      Units: "meters", 
+      Display: DisplayType.Graph
     }
   ]
 };

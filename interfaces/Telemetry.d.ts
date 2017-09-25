@@ -7,6 +7,7 @@ interface ITelemetryModuleRegistration {
   PollingInterval?: number; // Optional interval to poll data at (in milliseconds; minimum: 500, maximum: 5000, default: 1000)
   Data: ITelemetryDataRegistration[]; // Array of the values that this telemetry module provides
   Module: any;
+  DataGroups?: ITelemetryDataDisplayGroups[]; // Groupings for displaying data
 }
 
 
@@ -33,6 +34,7 @@ interface ITelemetryDataRegistration {
   Units?: string; // Unit of this type, 
   Min?: any; // Minimum value this should be
   Max?: any; // Maximum value this should be
+  Display?: DataDisplayType; // Default = DisplayType.Table
 }
 
 
@@ -42,6 +44,15 @@ interface ITelemetryDataRegistration {
 interface ITelemetryData { 
   Key: string; 
   Value: any;
+}
+
+
+/**
+ * Represents a connection between display types that 
+ * should be shown using the same graph/table
+ */
+interface ITelemetryDataDisplayGroups { 
+  Keys: string[]; // All the keys to display in this group
 }
 
 
