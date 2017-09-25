@@ -20,7 +20,7 @@ class ModuleLoader implements IModuleLoader {
   /**
    * Loads all of the modules 
    */
-  public Load(): Promise<any> {
+  public Load(): Promise<ITelemetryModuleRegistration[]> {
     let dfd = new Deferred(); 
 
     // Load all the module registration files
@@ -30,7 +30,7 @@ class ModuleLoader implements IModuleLoader {
         this._moduleCache[modules[i].Name] = modules[i]; 
       }
 
-      dfd.Resolve();
+      dfd.Resolve(modules);
     });
 
     

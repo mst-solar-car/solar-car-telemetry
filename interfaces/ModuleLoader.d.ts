@@ -1,4 +1,4 @@
 interface IModuleLoader { 
-  Load(): Promise<any>;
+  Load(): Promise<ITelemetryModuleRegistration[]>;
   Resolve(name: string): ITelemetryModuleRegistration;
 }
