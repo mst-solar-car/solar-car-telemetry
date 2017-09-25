@@ -10,8 +10,6 @@ class SolarCarTelemetry {
   constructor() { 
     ModuleLoader.Load().then(() => {
       // All modules are done loading
-      
-      console.log(mod);
     });
   }
 
