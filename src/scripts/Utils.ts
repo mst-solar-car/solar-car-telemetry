@@ -37,3 +37,16 @@ class Deferred implements IDeferred {
     });
   }
 }
+
+
+
+/**
+ * Generates a Guid 
+ */
+function Guid(): Guid { 
+  let gen = () => { 
+    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+  };
+  
+  return (gen() + gen() + "-" + gen() + "-4" + gen().substr(0, 3) + "-" + gen() + "-" + gen() + gen() + gen()).toLowerCase();
+}

@@ -3,6 +3,7 @@ import "Enums";
 
 import ModuleLoader = require("framework/ModuleLoader");
 import TelemetryProvider = require("framework/TelemetryProvider");
+import PubSub = require("framework/PubSub");
 
 let ko: KnockoutStatic = require("knockout"); 
 
@@ -12,7 +13,7 @@ let ko: KnockoutStatic = require("knockout");
  */
 class SolarCarTelemetry { 
   
-  public Providers: KnockoutObservableArray<ITelemetryProvider>; // List of providers
+  public Providers: KnockoutObservableArray<ITelemetryProvider>; // List of telemetry providers
 
 
 
@@ -28,7 +29,6 @@ class SolarCarTelemetry {
       }
     });
 
-    
   }
 
 }
