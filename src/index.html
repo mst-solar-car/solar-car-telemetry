@@ -8,15 +8,25 @@
   </head>
   <body> 
     <div id="SolarCarTelemetry">
+      <div class="nav-bar">
+        <ul> 
+          <li data-bind="click: ChangeView('dashboard'), css: { active: CurrentView() == 'dashboard' }" title="Dashboard">Dashboard</li>
+          <!-- ko foreach: Providers -->
+          <li data-bind="click: $parent.ChangeView($data.Id), text: $data.Name, css: { active: $parent.CurrentView() == $data.Id }, attr: { title: $data.Name }"></li>
+          <!-- /ko -->
+        </ul>
+      </div> 
 
-
-
-      <div data-bind="foreach: Providers"> 
-        <h1 data-bind="text: Name"></h1>
-        <div data-bind="foreach: Object.keys(LatestValues())"> 
-          <span data-bind="text: $data"></span>: <span data-bind="text: $parent.LatestValues()[$data]"></span><br/>
-        </div>
+      <div class="data-view"> 
+        <!-- ko if: CurrentView() != 'dashboard' -->
+          <!-- ko if: CurrentProvider() -->
+            <!-- ko foreach: Object.keys(CurrentProvider().LatestValues()) --> 
+            <span data-bind="text: $data"></span>: <span data-bind="text: $root.CurrentProvider().LatestValues()[$data]"></span><br/>
+            <!-- /ko -->
+          <!-- /ko -->
+        <!-- /ko -->
       </div>
+
 
       <div id="NotificationContainer"> 
       </div>

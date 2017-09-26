@@ -1,7 +1,7 @@
 import SampleModule = require("modules/Sample/SampleModule");
 
 let registration: ITelemetryModuleRegistration = { 
-  Name: "Sample Telemetry Module", 
+  Name: "Sample Data", 
   NeedsPolling: false, 
   Module: new SampleModule(), 
   Data: [

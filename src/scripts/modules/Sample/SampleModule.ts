@@ -1,4 +1,5 @@
 import TelemetryModule = require("modules/TelemetryModule"); 
+import PubSub = require("framework/PubSub");
 
 /**
  * This is a sample module that provides sample telemetry data in real time

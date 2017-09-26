@@ -2,7 +2,7 @@
 
 
 html, body { 
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif !important;
   color: @primary-font-color;
   background-color: @background-color; 
 
@@ -16,13 +16,45 @@ html, body {
   margin: 0; 
   padding: 0;
 
-  h1 { 
-    font-size: 1.2em;
+  .nav-bar { 
+    width: 200px;
+    height: 100vh; 
+
+    border-right: 1px solid #dadada;
+    resize: horizontal; 
+    overflow: auto;
+
+    display: block; 
+    float: left;
+
+    ul { 
+      padding: 0; 
+      margin: 0; 
+
+      li { 
+        list-style: none; 
+        padding: 10px 5px;
+        cursor: pointer;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        
+        &:hover { 
+          background-color: @nav-highlight-color;
+        }
+        &.active { 
+          background-color: @nav-active-color;
+        }
+      }
+    }
   }
 
-  h2 { 
-    font-size: 1.1em;
+
+  .data-view { 
+    display: inline-block; 
+    padding-left: 10px;
   }
+
 
   #NotificationContainer { 
     .alert { 

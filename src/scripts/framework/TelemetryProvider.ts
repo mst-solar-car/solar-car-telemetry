@@ -7,6 +7,7 @@ let ko: KnockoutStatic = require("knockout");
  */
 class TelemetryProvider implements ITelemetryProvider { 
   
+  public Id: string;
   public Name: string; 
   public LatestValues: KnockoutObservable<any>;; // Hashmap of observables key -> value
 
@@ -20,6 +21,8 @@ class TelemetryProvider implements ITelemetryProvider {
    * @param moduleRegistration Registration for the module that this class should wrap
    */
   constructor(moduleRegistration: ITelemetryModuleRegistration) {
+    this.Id = Guid(); 
+    
     this._registration = moduleRegistration;
 
     this.Name = this._registration.Name; 
