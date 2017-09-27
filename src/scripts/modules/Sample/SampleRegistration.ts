@@ -12,7 +12,7 @@ let registration: ITelemetryModuleRegistration = {
       DataType: TelemetryDataType.Float, 
       Units: "meters", 
       Default: 0,
-      Min: 75,
+      Min: 5,
       Display: DisplayType.Table
     }, 
     { 
@@ -21,6 +21,12 @@ let registration: ITelemetryModuleRegistration = {
       DataType: TelemetryDataType.Float,
       Display: DisplayType.Table, 
       Default: -55
+    }, 
+    { 
+      Name: "Sample Image", 
+      Key: "sample-image", 
+      DataType: TelemetryDataType.Image, 
+      Display: DisplayType.Image
     }
   ]
 };

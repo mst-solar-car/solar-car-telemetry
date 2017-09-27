@@ -1,35 +1,65 @@
-<!DOCTYPE html> 
-<html> 
-  <head> 
+<!DOCTYPE html>
+<html>
+  <head>
     <title>Bob</title>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="styles/main.css">
   </head>
-  <body> 
-    <div id="SolarCarTelemetry">
+  <body>
+    <div id="SolarCarTelemetry" class="container-fluid">
+
       <div class="nav-bar">
-        <ul> 
+        <ul>
           <li data-bind="click: ChangeView('dashboard'), css: { active: CurrentView() == 'dashboard' }" title="Dashboard">Dashboard</li>
           <!-- ko foreach: Providers -->
           <li data-bind="click: $parent.ChangeView($data.Id), text: $data.Name, css: { active: $parent.CurrentView() == $data.Id }, attr: { title: $data.Name }"></li>
           <!-- /ko -->
         </ul>
-      </div> 
+      </div>
 
-      <div class="data-view"> 
+
+      <div class="data-view">
         <!-- ko if: CurrentView() != 'dashboard' -->
           <!-- ko if: CurrentProvider() -->
-            <!-- ko foreach: Object.keys(CurrentProvider().LatestValues()) --> 
-            <span data-bind="text: $data"></span>: <span data-bind="text: $root.CurrentProvider().LatestValues()[$data].Value, css: { invalid: $root.CurrentProvider().LatestValues()[$data].Invalid }"></span><br/>
+          <div class="row" >
+
+              <!-- ko foreach: CurrentProvider().GetDataValues() -->
+              <div class="col-sm-6">
+                <div class="data-container">
+
+                  <!-- ko if: $data.Registration.Display == window.DisplayType.Table -->
+                    <table class="data-table table-striped">
+                      <thead>
+                        <tr>
+                          <th data-bind="text: $data.Registration.Name"></th>
+                          <th>Timestamp</th>
+                        </tr>
+                      </thead>
+                      <tbody data-bind="foreach: $data.Data">
+                        <tr>
+                          <td data-bind="text: Value"></td>
+                          <td data-bind="text: Updated"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  <!-- /ko -->
+
+                  <!-- ko if: $data.Registration.Display == window.DisplayType.Image -->
+                    <img data-bind="attr: { src: $data.Data().Value } " />
+                  <!-- /ko -->
+
+                </div>
+              </div>
             <!-- /ko -->
+
+          </div>
           <!-- /ko -->
         <!-- /ko -->
       </div>
 
-      
-      <div id="NotificationContainer"> 
-      </div>
+      <div id="NotificationContainer"></div>
     </div>
     <script src="lib/require.js" data-main="scripts/config"></script>
   </body>

@@ -19,12 +19,17 @@ class SampleModule extends TelemetryModule {
    * Initialize getting telemetry data
    */
   public Load(): void { 
+    this.Notify({ 
+      Key: 'sample-image', 
+      Value: 'https://www.hq.nasa.gov/alsj/a16/AS16-117-18747.jpg'
+    });
     // Generate random data every two seconds
     setInterval(() => {
       this.Notify({ 
         Key: 'sample-data-1', 
         Value: Math.floor((Math.random() * 100) + 1)
       });
+      
     }, 2000);
   }
 
