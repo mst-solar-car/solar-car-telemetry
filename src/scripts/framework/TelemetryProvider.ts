@@ -118,7 +118,6 @@ class TelemetryProvider implements ITelemetryProvider {
   /**
    * Updates the value for a key
    */
-<<<<<<< HEAD
   private _updateValue(key: string, value: any, invalid: boolean): void {
     if (this._data[key] == undefined) {
       console.warn("Tried to update value for " + key + " but that's an unregistered data value");
@@ -132,26 +131,10 @@ class TelemetryProvider implements ITelemetryProvider {
     switch (registration.Display) {
       case DisplayType.Table:
       case DisplayType.Graph:
-=======
-  private _updateValue(key: string, value: any, invalid: boolean): void {
-    if (this._data[key] == undefined) {
-      console.warn("Tried to update value for " + key + " but that's an unregistered data value");
-      return; // Not a valid key
-    }
-
-    let registration = this._data[key] as ITelemetryDataRegistration;
-
-    let newVal = { Value: value , Invalid: invalid, Updated: (new Date()).toISOString() }; // New value to add
-
-    switch (registration.Display) {
-      case DisplayType.Table:
-      case DisplayType.Graph:
->>>>>>> 5aa2388c25a6096b41731845858c4846f918607f
         if (this.LatestValues[key] == undefined) {
           this.LatestValues[key] = ko.observableArray([]);
         }
 
-<<<<<<< HEAD
         this.LatestValues[key].push(newVal);
 
         break;
@@ -159,15 +142,6 @@ class TelemetryProvider implements ITelemetryProvider {
       case DisplayType.Image:
         if (this.LatestValues[key] == undefined) {
           this.LatestValues[key] = ko.observable(null);
-=======
-        this.LatestValues[key].push(newVal);
-
-        break;
-
-      case DisplayType.Image:
-        if (this.LatestValues[key] == undefined) {
-          this.LatestValues[key] = ko.observable(null);
->>>>>>> 5aa2388c25a6096b41731845858c4846f918607f
         }
 
         this.LatestValues[key](newVal);
