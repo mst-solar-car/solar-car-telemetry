@@ -44,9 +44,11 @@ class SolarCarTelemetry {
     if (id == this.CurrentView()) return; // Nothing to change
 
     let provider = this._findProviderWithId(id); 
-    if (provider == null && id != 'dashboard') 
+
+    if (provider == null && id != 'dashboard')
       return; 
-    else if (id != 'dashboard') { 
+    
+    if (id != 'dashboard') { 
       this.CurrentProvider(provider);
     }
     

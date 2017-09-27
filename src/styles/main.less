@@ -53,6 +53,11 @@ html, body {
   .data-view { 
     display: inline-block; 
     padding-left: 10px;
+
+
+    .invalid { 
+      color: @error-color;
+    }
   }
 
 
@@ -64,6 +69,17 @@ html, body {
 
     .alert { 
       cursor: default;
+      padding: 10px;
+    }
+
+    .alert-danger { 
+      background-color: @error-color;
+      color: @primary-font-color;
+    }
+
+    .alert-warning { 
+      background-color: @warning-color;
+      color: @primary-font-color;
     }
   }
 }
