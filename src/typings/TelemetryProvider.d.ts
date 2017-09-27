@@ -4,5 +4,5 @@
 interface ITelemetryProvider {
     Id: string;
     Name: string; 
-    //Update(options): Promise<any>;
+    GetDataValues(): Generator;
 }

@@ -6,6 +6,9 @@
         "target": "es2016",
         "watch": false
     }, 
+    "lib": [ 
+        "es2016"
+    ],
     "include": [ 
         "interfaces/**/*",
         "src/**/*"

@@ -1,8 +1,8 @@
 /**
  *  The RequireJS Config File
  */
-require.config({ 
-  baseUrl: "scripts", 
+require.config({
+  baseUrl: "scripts",
   paths: {
     knockout: '../lib/knockout'
   }

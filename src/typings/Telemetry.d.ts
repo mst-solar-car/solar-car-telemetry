@@ -50,6 +50,7 @@ interface ITelemetryData {
 interface IDataValue<T> { 
   Value: T; 
   Invalid: boolean;
+  Updated: string;
 }
 
 /**

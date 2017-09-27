@@ -9,7 +9,7 @@ class TelemetryProvider implements ITelemetryProvider {
   
   public Id: string;
   public Name: string; 
-  public LatestValues: KnockoutObservable<any>;; // Hashmap of observables key -> IDataValue<any>
+  public LatestValues: any; // Hashmap of observables key -> IDataValue<any>
 
   private _registration: ITelemetryModuleRegistration;
 
@@ -27,7 +27,7 @@ class TelemetryProvider implements ITelemetryProvider {
 
     this.Name = this._registration.Name; 
 
-    this.LatestValues = ko.observable({});
+    this.LatestValues = {};
     this._data = {};
 
 
@@ -39,14 +39,16 @@ class TelemetryProvider implements ITelemetryProvider {
       
       // Subscribe to this key and monitor the value
       this._registration.Module.Subscribe(dataRegistration.Key, this._monitorValue);
-
+      
       // Give the default value
-      this._updateValue(dataRegistration.Key, (dataRegistration.Default != undefined ? dataRegistration.Default : null), false);
+      this._updateValue(dataRegistration.Key, (dataRegistration.Default != undefined ? dataRegistration.Default : ''), false);
     }
 
+   
     // Initialize the module for getting data
     this._registration.Module.Load();
 
+    
     // Start polling if needed
     if (this._registration.NeedsPolling) { 
       if (this._registration.Module.UpdateData) { 
@@ -55,6 +57,35 @@ class TelemetryProvider implements ITelemetryProvider {
       }
       else { 
         console.warn("Module " + this.Name + " has no UpdateData() method and requires polling"); 
+      }
+    }
+  }
+
+
+  /**
+   * Creates an array of a custom type specific for the UI
+   */
+  public* GetDataValues(): Generator {
+    for (let key in this.LatestValues) { 
+      if (this.LatestValues.hasOwnProperty(key) && this._data[key] != undefined) { 
+        yield { 
+          Key: key,
+          Registration: this._data[key], 
+          Data: this.LatestValues[key]
+        };
+      }
+    }
+  }
+
+  public getDataValues(): any{ 
+    for (let key in this.LatestValues) { 
+      if (this.LatestValues.hasOwnProperty(key) && this._data[key] != undefined) { 
+        console.log(key);
+        return { 
+          Key: key,
+          Registration: this._data[key], 
+          Data: this.LatestValues[key]
+        };
       }
     }
   }
@@ -101,10 +132,37 @@ class TelemetryProvider implements ITelemetryProvider {
    * Updates the value for a key 
    */
   private _updateValue(key: string, value: any, invalid: boolean): void { 
-    let vals = this.LatestValues(); 
-    vals[key] = { Value: value, Invalid: invalid }; 
+    if (this._data[key] == undefined) {
+      console.warn("Tried to update value for " + key + " but that's an unregistered data value");
+      return; // Not a valid key 
+    }
+    
+    let registration = this._data[key] as ITelemetryDataRegistration; 
 
-    this.LatestValues(vals);
+    let newVal = { Value: value , Invalid: invalid, Updated: (new Date()).toISOString() }; // New value to add
+
+    switch (registration.Display) { 
+      case DisplayType.Table: 
+      case DisplayType.Graph: 
+        if (this.LatestValues[key] == undefined) {
+          this.LatestValues[key] = ko.observableArray([]);
+        }
+
+        this.LatestValues[key].push(newVal); 
+
+        break;
+
+      case DisplayType.Image: 
+        if (this.LatestValues[key] == undefined) { 
+          this.LatestValues[key] = ko.observable(null); 
+        }
+
+        this.LatestValues[key](newVal);
+
+        break;
+    }
+
+
   }
 
 

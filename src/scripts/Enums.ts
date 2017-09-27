@@ -15,9 +15,9 @@
  * Enum for how data should be represented
  */
 enum DisplayType { 
-  Graph, 
-  Image, 
-  Table
+  Graph = 0, 
+  Image = 1, 
+  Table = 2
 }
 
 
