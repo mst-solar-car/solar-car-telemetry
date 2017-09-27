@@ -12,6 +12,7 @@ let registration: ITelemetryModuleRegistration = {
       DataType: TelemetryDataType.Float, 
       Units: "meters", 
       Default: 0,
+      Min: 75,
       Display: DisplayType.Table
     }, 
     { 

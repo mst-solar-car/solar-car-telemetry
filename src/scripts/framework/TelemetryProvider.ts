@@ -1,6 +1,6 @@
 let ko: KnockoutStatic = require("knockout"); 
 
-
+import PubSub = require("framework/PubSub");
 /**
  * The Telemetry Provider class will wrap around a Telemetry Module and update the main program (UI) 
  * when new data is received, it will also be responisble for polling new data when desired
@@ -9,7 +9,7 @@ class TelemetryProvider implements ITelemetryProvider {
   
   public Id: string;
   public Name: string; 
-  public LatestValues: KnockoutObservable<any>;; // Hashmap of observables key -> value
+  public LatestValues: KnockoutObservable<any>;; // Hashmap of observables key -> IDataValue<any>
 
   private _registration: ITelemetryModuleRegistration;
 
@@ -37,16 +37,11 @@ class TelemetryProvider implements ITelemetryProvider {
 
       this._data[dataRegistration.Key] = dataRegistration; // Add to the data hash map
       
-      // Subscribe to this key
-      this._registration.Module.Subscribe(dataRegistration.Key, (data: ITelemetryData) => {
-        console.log(data);
-
-        // Update value
-        this._updateValue(data.Key, data.Value);
-      });
+      // Subscribe to this key and monitor the value
+      this._registration.Module.Subscribe(dataRegistration.Key, this._monitorValue);
 
       // Give the default value
-      this._updateValue(dataRegistration.Key, (dataRegistration.Default != undefined ? dataRegistration.Default : null));
+      this._updateValue(dataRegistration.Key, (dataRegistration.Default != undefined ? dataRegistration.Default : null), false);
     }
 
     // Initialize the module for getting data
@@ -66,11 +61,48 @@ class TelemetryProvider implements ITelemetryProvider {
 
 
   /**
+   * Montiors a value
+   */
+  private _monitorValue = (data: ITelemetryData) => { 
+    if (this._data[data.Key] == undefined) return;
+
+    let registration = this._data[data.Key] as ITelemetryDataRegistration;
+
+    let invalid: boolean = false; 
+
+    // Compare against minimum and maximum values if available
+    if (registration.DataType != TelemetryDataType.String && registration.DataType != TelemetryDataType.Image) { 
+      // Compare minimum
+      if (registration.Min && data.Value < registration.Min) {
+        PubSub.PublishError(registration.Name + ' is less than minimum value (' + data.Value + ' < ' + registration.Min + ')', data);
+        invalid = true;
+      }
+      // Compare maximum
+      else if (registration.Max && data.Value > registration.Max) { 
+        PubSub.PublishError(registration.Name + ' is more than maximum value (' + data.Value + ' > ' + registration.Max + ')', data);
+        invalid = true;
+      }
+      // Minimum Warning
+      else if (registration.Min && data.Value == registration.Min) { 
+        PubSub.PublishWarning(registration.Name + ' is equal to the minimum value (' + data.Value + ')', data); 
+      }
+      // Maximum Warning
+      else if (registration.Max && data.Value == registration.Max) { 
+        PubSub.PublishWarning(registration.Name + ' is equal to the maximum value (' + data.Value + ')', data); 
+      }
+    }
+
+    // Update the value
+    this._updateValue(data.Key, data.Value, invalid);
+  };
+
+
+  /**
    * Updates the value for a key 
    */
-  private _updateValue(key: string, value: any): void { 
+  private _updateValue(key: string, value: any, invalid: boolean): void { 
     let vals = this.LatestValues(); 
-    vals[key] = value; 
+    vals[key] = { Value: value, Invalid: invalid }; 
 
     this.LatestValues(vals);
   }
@@ -84,7 +116,6 @@ class TelemetryProvider implements ITelemetryProvider {
 
     // Hit the update function every PollingInterval
     setInterval(() => {
-      console.info("Polling " + this.Name);
       this._registration.Module.UpdateData();
     }, this._registration.PollingInterval);
   }

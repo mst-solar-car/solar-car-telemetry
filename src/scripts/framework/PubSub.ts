@@ -77,7 +77,7 @@ class PubSub implements IPubSub {
     // Remove after 3 seconds
     setTimeout(() => {
       this._container.removeChild(notification_el);
-    }, 3000);
+    }, 5000);
     
     // Notify subscribers 
     this.Publish('error', { Message: message, Data: data } );

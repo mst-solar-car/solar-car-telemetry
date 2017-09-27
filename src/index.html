@@ -21,7 +21,7 @@
         <!-- ko if: CurrentView() != 'dashboard' -->
           <!-- ko if: CurrentProvider() -->
             <!-- ko foreach: Object.keys(CurrentProvider().LatestValues()) --> 
-            <span data-bind="text: $data"></span>: <span data-bind="text: $root.CurrentProvider().LatestValues()[$data]"></span><br/>
+            <span data-bind="text: $data"></span>: <span data-bind="text: $root.CurrentProvider().LatestValues()[$data].Value, css: { invalid: $root.CurrentProvider().LatestValues()[$data].Invalid }"></span><br/>
             <!-- /ko -->
           <!-- /ko -->
         <!-- /ko -->

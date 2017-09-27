@@ -47,6 +47,10 @@ interface ITelemetryData {
   Value: any;
 }
 
+interface IDataValue<T> { 
+  Value: T; 
+  Invalid: boolean;
+}
 
 /**
  * Represents a connection between display types that 
