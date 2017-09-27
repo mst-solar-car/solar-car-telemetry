@@ -667,12 +667,10 @@
                         var next = { value: undefined, done: false };
                         while (!next.done) {
                             next = value.next();
-                            console.log('b', next);
                             if (!next.done) {
                                 resultArr.push(next.value);
                             }
                         }
-                        console.log('p', resultArr);
                     }
                 }
                 catch (e) {
@@ -4440,11 +4438,10 @@
     // "foreach: someExpression" is equivalent to "template: { foreach: someExpression }"
     // "foreach: { data: someExpression, afterAdd: myfn }" is equivalent to "template: { foreach: someExpression, afterAdd: myfn }"
     ko.bindingHandlers['foreach'] = {
-        makeTemplateValueAccessor: function(valueAccessor, isUpdate) {
+        makeTemplateValueAccessor: function(valueAccessor) {
             return function() {
-                var modelValue = valueAccessor();
-                if (isUpdate) modelValue = ko.utils.iteratorToArray(valueAccessor());
-                var unwrappedValue = ko.utils.peekObservable(modelValue);    // Unwrap without setting a dependency here
+                var modelValue = ko.utils.iteratorToArray(valueAccessor()),
+                    unwrappedValue = ko.utils.peekObservable(modelValue);    // Unwrap without setting a dependency here
 
                 // If unwrappedValue is the array, pass in the wrapped value on its own
                 // The value will be unwrapped and tracked within the template binding
@@ -4468,12 +4465,10 @@
             };
         },
         'init': function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-            console.log('init foreach');
-            return ko.bindingHandlers['template']['init'](element, ko.bindingHandlers['foreach'].makeTemplateValueAccessor(valueAccessor, false));
+            return ko.bindingHandlers['template']['init'](element, ko.bindingHandlers['foreach'].makeTemplateValueAccessor(valueAccessor));
         },
         'update': function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-            console.log('update foreach');
-            return ko.bindingHandlers['template']['update'](element, ko.bindingHandlers['foreach'].makeTemplateValueAccessor(valueAccessor, true), allBindings, viewModel, bindingContext);
+            return ko.bindingHandlers['template']['update'](element, ko.bindingHandlers['foreach'].makeTemplateValueAccessor(valueAccessor), allBindings, viewModel, bindingContext);
         }
     };
     ko.expressionRewriting.bindingRewriteValidators['foreach'] = false; // Can't rewrite control flow bindings

@@ -16,9 +16,6 @@
           <!-- ko foreach: Providers -->
           <li data-bind="click: $parent.ChangeView($data.Id), text: $data.Name, css: { active: $parent.CurrentView() == $data.Id }, attr: { title: $data.Name }"></li>
           <!-- /ko -->
-          <!-- ko foreach: ['hi', 'howdy', 'hello'] -->
-          <li data-bind="text: $data"></li>
-          <!-- /ko -->
         </ul>
       </div>
 

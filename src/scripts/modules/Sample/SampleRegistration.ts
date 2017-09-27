@@ -1,32 +1,33 @@
 import SampleModule = require("modules/Sample/SampleModule");
 
-let registration: ITelemetryModuleRegistration = { 
-  Name: "Sample Data", 
-  NeedsPolling: false, 
-  Module: new SampleModule(), 
+let registration: ITelemetryModuleRegistration = {
+  Name: "Sample Data",
+  NeedsPolling: false,
+  Module: new SampleModule(),
   Data: [
     {
-      Name: "Sample Data 1", 
+      Name: "Sample Data 1",
       Key: "sample-data-1",
-      Description: "Description of Sample Data 1", 
-      DataType: TelemetryDataType.Float, 
-      Units: "meters", 
+      Description: "Description of Sample Data 1",
+      DataType: TelemetryDataType.Float,
+      Units: "meters",
       Default: 0,
       Min: 5,
       Display: DisplayType.Table
-    }, 
-    { 
-      Name: "Sample Data 2", 
-      Key: "sample-data-2", 
+    },
+    {
+      Name: "Sample Data 2",
+      Key: "sample-data-2",
       DataType: TelemetryDataType.Float,
-      Display: DisplayType.Table, 
+      Display: DisplayType.Table,
       Default: -55
-    }, 
-    { 
-      Name: "Sample Image", 
-      Key: "sample-image", 
-      DataType: TelemetryDataType.Image, 
-      Display: DisplayType.Image
+    },
+    {
+      Name: "Sample Image",
+      Key: "sample-image",
+      DataType: TelemetryDataType.Image,
+      Display: DisplayType.Image,
+      Default: 'https://www.hq.nasa.gov/alsj/a16/AS16-117-18734.jpg'
     }
   ]
 };
