@@ -31,7 +31,7 @@ class TelemetryProvider implements ITelemetryProvider {
     this._dataRegistration = {};
 
     // Monitor the source of the module
-    moduleRegistration.Source = new SourceMonitor(moduleRegistration.Source, moduleRegistration.NeedsPolling, this._monitorValue);
+    moduleRegistration.Source = new SourceMonitor(moduleRegistration.Source, moduleRegistration.PollingInterval, this._monitorValue);
 
     // Make copy of registration details and give default values
     for (let i = 0; i < moduleRegistration.Data.length; i++) {

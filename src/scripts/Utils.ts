@@ -78,3 +78,52 @@ function ParseURL(url: string): IParsedURL {
     return null;
   }
 }
+
+
+/**
+ * Retrieves telemetry data after querying a url
+ * @param url url to get data from
+ */
+function NetworkRequest(url: string): Promise<ITelemetryData[]> {
+  let dfd = new Deferred();
+
+  let request = new XMLHttpRequest();
+  request.open("GET", url);
+  request.setRequestHeader('Content-Type', 'application/json; charset=UTF8-8');
+
+  request.onload = (e) => {
+    if (request.readyState != 2)
+      return;
+
+    if (request.status >= 200 && request.status < 400) {
+      try {
+        let data = JSON.parse(request.responseText);
+        dfd.Resolve(data);
+      }
+      catch (e) {
+        console.error(e);
+        dfd.Reject();
+      }
+    }
+    else {
+      dfd.Reject();
+    }
+  };
+
+  request.onerror = (res: ErrorEvent) => {
+      dfd.Reject();
+  };
+
+  request.send();
+
+  return dfd.Promise;
+}
+
+
+
+/**
+ * Does something as soon as possible
+ */
+function ASAP(callback: () => void): void {
+  setTimeout(callback, 0);
+}

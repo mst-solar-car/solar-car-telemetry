@@ -72,6 +72,16 @@ class ModuleLoader implements IModuleLoader {
       }
     }
 
+    // Default polling interval
+    if (module.PollingInterval == undefined)
+      module.PollingInterval = 1000;
+
+    if (module.PollingInterval < 500)
+      module.PollingInterval = 500; // Minimum polling interval
+
+    if (module.PollingInterval > 5000)
+      module.PollingInterval = 5000; // Maximum polling interval
+
     return module
   }
 

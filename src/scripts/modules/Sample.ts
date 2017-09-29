@@ -1,6 +1,5 @@
 let registration: ITelemetryModuleRegistration = {
   Name: "Sample Data",
-  NeedsPolling: false,
   Source: "ws://localhost:1337",
   Data: [
     {
