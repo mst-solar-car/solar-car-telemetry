@@ -1,4 +1,4 @@
-import RegisteredModules = require("ModuleRegistration");
+import RegisteredModules = require("modules/ModuleRegistration");
 
 
 
@@ -29,7 +29,6 @@ class ModuleLoader implements IModuleLoader {
       for (let i = 0; i < modules.length; i++) {
         this._moduleCache[modules[i].Name] = this._setDefaults(modules[i]);
       }
-
 
       dfd.Resolve(modules);
     });

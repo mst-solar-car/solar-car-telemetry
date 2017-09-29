@@ -1,6 +1,9 @@
 let ko: KnockoutStatic = require("knockout");
 
 import PubSub = require("framework/PubSub");
+import SourceMonitor = require("framework/SourceMonitor");
+
+
 /**
  * The Telemetry Provider class will wrap around a Telemetry Module and update the main program (UI)
  * when new data is received, it will also be responisble for polling new data when desired
@@ -9,11 +12,11 @@ class TelemetryProvider implements ITelemetryProvider {
 
   public Id: string;
   public Name: string;
-  public LatestValues: any; // Hashmap of observables key -> KnockoutObservableArray<IDataValue>
 
   private _registration: ITelemetryModuleRegistration;
 
-  private _data: any; // Hash map for data registration key -> ITelemetryDataRegistration
+  public LatestValues: any; // Object: key -> KnockoutObservableArray<IDataValue>
+  private _dataRegistration: any; // Object: key -> ITelemetryDataRegistration
 
 
   /**
@@ -22,40 +25,24 @@ class TelemetryProvider implements ITelemetryProvider {
    */
   constructor(moduleRegistration: ITelemetryModuleRegistration) {
     this.Id = Guid();
-
     this._registration = moduleRegistration;
-
     this.Name = this._registration.Name;
-
     this.LatestValues = {};
-    this._data = {};
+    this._dataRegistration = {};
 
+    // Monitor the source of the module
+    moduleRegistration.Source = new SourceMonitor(moduleRegistration.Source, moduleRegistration.NeedsPolling, this._monitorValue);
 
+    // Make copy of registration details and give default values
     for (let i = 0; i < moduleRegistration.Data.length; i++) {
       let dataRegistration = moduleRegistration.Data[i];
 
-      this._data[dataRegistration.Key] = dataRegistration; // Add to the data hash map
-
-      // Subscribe to this key and monitor the value
-      this._registration.Module.Subscribe(dataRegistration.Key, this._monitorValue);
+      this._dataRegistration[dataRegistration.Key] = dataRegistration; // Keep a copy
 
       // Give the default value
       this._updateValue(dataRegistration.Key, (dataRegistration.Default != undefined ? dataRegistration.Default : ''), false);
     }
 
-    // Initialize the module for getting data
-    this._registration.Module.Load();
-
-    // Start polling if needed
-    if (this._registration.NeedsPolling) {
-      if (this._registration.Module.UpdateData) {
-        this._registration.Module.UpdateData();
-        this._startPolling();
-      }
-      else {
-        console.warn("Module " + this.Name + " has no UpdateData() method and requires polling");
-      }
-    }
   }
 
 
@@ -64,10 +51,10 @@ class TelemetryProvider implements ITelemetryProvider {
    */
   public* GetDataValues(): Generator {
     for (let key in this.LatestValues) {
-      if (this.LatestValues.hasOwnProperty(key) && this._data[key] != undefined) {
+      if (this.LatestValues.hasOwnProperty(key) && this._dataRegistration[key] != undefined) {
         yield <ITelemetryDataDTO>{
           Key: key,
-          Registration: this._data[key],
+          Registration: this._dataRegistration[key],
           Data: this.LatestValues[key]
         };
       }
@@ -113,12 +100,14 @@ class TelemetryProvider implements ITelemetryProvider {
 
 
   /**
-   * Montiors a value
+   * Montiors a value, is executed when new
+   * data is published
    */
   private _monitorValue = (data: ITelemetryData) => {
-    if (this._data[data.Key] == undefined) return;
+    console.log(data);
+    if (this._dataRegistration[data.Key] == undefined) return;
 
-    let registration = this._data[data.Key] as ITelemetryDataRegistration;
+    let registration = this._dataRegistration[data.Key] as ITelemetryDataRegistration;
 
     let invalid: boolean = false;
 
@@ -153,12 +142,12 @@ class TelemetryProvider implements ITelemetryProvider {
    * Updates the value for a key
    */
   private _updateValue(key: string, value: any, invalid: boolean): void {
-    if (this._data[key] == undefined) {
+    if (this._dataRegistration[key] == undefined) {
       console.warn("Tried to update value for " + key + " but that's an unregistered data value");
       return; // Not a valid key
     }
 
-    let registration = this._data[key] as ITelemetryDataRegistration;
+    let registration = this._dataRegistration[key] as ITelemetryDataRegistration;
 
     let newVal = <IDataValue>{ Value: value , Invalid: invalid, Updated: (new Date()).toISOString()  }; // New value to add
 
@@ -182,19 +171,6 @@ class TelemetryProvider implements ITelemetryProvider {
     }
 
 
-  }
-
-
-  /**
-   * Starts polling at the registered interval
-   */
-  private _startPolling(): void {
-    this._registration.PollingInterval = this._registration.PollingInterval || 1000; // Default to 1000ms
-
-    // Hit the update function every PollingInterval
-    setInterval(() => {
-      this._registration.Module.UpdateData();
-    }, this._registration.PollingInterval);
   }
 
 

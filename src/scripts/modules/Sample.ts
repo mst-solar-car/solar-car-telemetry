@@ -1,9 +1,7 @@
-import SampleModule = require("modules/Sample/SampleModule");
-
 let registration: ITelemetryModuleRegistration = {
   Name: "Sample Data",
   NeedsPolling: false,
-  Module: new SampleModule(),
+  Source: "ws://localhost:1337",
   Data: [
     {
       Name: "Sample Data 1",

@@ -6,7 +6,7 @@ interface ITelemetryModuleRegistration {
   NeedsPolling: boolean; // True if the module needs to be polled for data, false if it gets it automagically (WebSockets)
   PollingInterval?: number; // Optional interval to poll data at (in milliseconds; minimum: 500, maximum: 5000, default: 1000)
   Data: ITelemetryDataRegistration[]; // Array of the values that this telemetry module provides
-  Module: any;
+  Source: any;
   DataGroups?: ITelemetryDataDisplayGroups[]; // Groupings for displaying data
 }
 
