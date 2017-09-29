@@ -1,57 +1,57 @@
-@import "variables.less"; 
+@import "variables.less";
 
 
-html, body { 
+html, body {
   font-family: 'Open Sans', sans-serif !important;
   color: @primary-font-color;
-  background-color: @background-color; 
+  background-color: @background-color;
 
-  padding: 0; 
+  padding: 0;
   margin: 0;
 }
 
 
 
-#SolarCarTelemetry { 
-  margin: 0; 
+#SolarCarTelemetry {
+  margin: 0;
   padding: 0;
 
-  .nav-bar { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    bottom: 0; 
+  .nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
 
-    width: 16.67%; 
+    width: 16.67%;
 
-    z-index: 1000; 
+    z-index: 1000;
 
-    display: block; 
+    display: block;
     overflow: auto;
 
-    background-color: @background-color; 
+    background-color: @background-color;
     border-right: 1px solid #dadada;
-    
-    padding: 0; 
 
-    ul { 
-      padding: 0; 
-      margin: 0; 
-      width: 100%; 
+    padding: 0;
 
-      li { 
-        list-style: none; 
+    ul {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+
+      li {
+        list-style: none;
         width: 100%;
         padding: 10px 5px;
         cursor: pointer;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
-        
-        &:hover { 
+
+        &:hover {
           background-color: @nav-highlight-color;
         }
-        &.active { 
+        &.active {
           background-color: @nav-active-color;
         }
       }
@@ -60,36 +60,36 @@ html, body {
 
 
 
-  .data-view { 
+  .data-view {
     margin-left: 16.67%;
     display: block;
     padding-left: 10px;
 
 
-    .invalid { 
+    .invalid {
       color: @error-color;
     }
 
-    .data-container { 
+    .data-container {
       display: block;
-      height: 400px; 
-      overflow-y: scroll;
-      padding-right: 20px; 
+      height: 400px;
+      overflow-y: auto;
+      padding-right: 20px;
       margin: 10px;
 
-      img { 
-        max-height: 400px; 
+      img {
+        max-height: 400px;
       }
 
-      .data-table { 
+      .data-table {
         font-size: 0.9em;
 
-        thead tr th{ 
-          text-align: center !important; 
+        thead tr th{
+          text-align: center !important;
         }
 
-        tbody { 
-          tr { 
+        tbody {
+          tr {
             border-bottom: 1px solid @table-border-color;
           }
         }
@@ -98,23 +98,23 @@ html, body {
   }
 
 
-  #NotificationContainer { 
-    position: absolute; 
-    top: 1em; 
-    right: 1em; 
-    bottom: 0; 
+  #NotificationContainer {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    bottom: 0;
 
-    .alert { 
+    .alert {
       cursor: default;
       padding: 10px;
     }
 
-    .alert-danger { 
+    .alert-danger {
       background-color: @error-color;
       color: @primary-font-color;
     }
 
-    .alert-warning { 
+    .alert-warning {
       background-color: @warning-color;
       color: @primary-font-color;
     }
