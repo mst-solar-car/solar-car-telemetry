@@ -1,9 +1,9 @@
 /**
  * To register a module add a path to your module here
- * Example: if your module name is "TestModule" then create a folder called "TestModule" in the
- * modules folder and add "TestModule" to the list below.
- * In that folder you should have a "TestModuleRegistration.ts" file that will contain an implementation of
- * ITelemetryModuleRegistration
+ * Example: if your module name is "TestModule" then create a file called "TestModule.ts" inside the
+ * modules folder, then add "TestModule" to the list below
+ *
+ * In "TestModule.ts" you should export a single object that implements the ITelemetryModuleRegistration interface
  */
 let modules: string[] = [
   "Sample"
