@@ -88,13 +88,13 @@ class SourceMonitor {
       let connection = new WebSocket(this._original.Complete);
 
       // Wait for a message
-      connection.onmessage = (e) => {
+      connection.addEventListener('message', (e) => {
         try {
           let data = JSON.parse(e.data);
           if (data.Key == undefined || data.Value == undefined)
             throw data;
 
-          // Only send the key and value
+          // Only send the Key and Value
           this._callback({
             Key: data.Key,
             Value: data.Value
@@ -103,7 +103,17 @@ class SourceMonitor {
         catch (e) {
           PubSub.PublishError('Received malformed data from websocket', e);
         }
-      };
+      });
+
+      // Handle errors
+      connection.addEventListener('error', (e) => {
+        PubSub.PublishError('WebSocket received error', e);
+      });
+
+      // Handle close
+      connection.addEventListener('close', (e) => {
+        PubSub.PublishWarning('WebSocket closed', e);
+      });
     }
     catch (e) {
       console.error(e);
