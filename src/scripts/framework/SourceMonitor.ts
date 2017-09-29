@@ -24,10 +24,21 @@ class SourceMonitor {
 
     this._callback = callback;
 
+    this._decideHowToMonitorSource();
+  }
+
+
+  /**
+   * Decides how to handle any given source
+   */
+  private _decideHowToMonitorSource() {
     // Decide what to do based on the type of the source provided
     switch (this._originalType) {
       case "function":
-        this._original = this._original(); // Get the return value of the function
+        this._original = this._original(); // Update original with return value of the function
+        this._originalType = typeof this._original;
+        this._decideHowToMonitorSource(); // Decide what to do based on the type just returned by the function
+        break;
 
       case "object":
         this._monitorObject();
@@ -41,7 +52,6 @@ class SourceMonitor {
       default:
         PubSub.PublishError("'" + this._originalType + "' is an unkown type of module source");
     }
-
   }
 
 
