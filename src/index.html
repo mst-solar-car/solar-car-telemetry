@@ -50,6 +50,12 @@
                     <img data-bind="attr: { src: $data.Data().Value } " />
                   <!-- /ko -->
 
+                  <!-- ko if: $data.Registration.Display == window.DisplayType.Graph -->
+                    <!-- ko if: $data.Registration.GraphType == window.GraphType.Line -->
+                    <canvas data-bind="chart: { type: 'line', data: $root.CurrentProvider().GetChartData($data), options: { animation: { duration: 0 }, observeChanges: true, throttle: 0 } }"></canvas>
+                    <!-- /ko -->
+                  <!-- /ko -->
+
                 </div>
               </div>
             <!-- /ko -->

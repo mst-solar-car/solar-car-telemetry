@@ -4,7 +4,9 @@
 require.config({
   baseUrl: "scripts",
   paths: {
-    knockout: '../lib/knockout'
+    knockout: '../lib/knockout',
+    chart: "../lib/chart",
+    knockoutChart: "../lib/knockout.chart"
   }
 });
 
@@ -13,6 +15,6 @@ require.config({
 /**
  * Load initial module
  */
-require(['knockout', 'SolarCarTelemetry'], (ko, main) => {
+require(['knockout', 'chart', 'knockoutChart', 'SolarCarTelemetry'], (ko, chartjs, knockoutchart, main) => {
   ko.applyBindings(new main());
 });

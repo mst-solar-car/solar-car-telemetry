@@ -3,6 +3,7 @@
  */
 interface ITelemetryProvider {
     Id: string;
-    Name: string; 
+    Name: string;
     GetDataValues(): Generator;
+    GetChartData(key: string): any;
 }

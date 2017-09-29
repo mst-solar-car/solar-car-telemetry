@@ -1,34 +1,33 @@
 /**
- * Enumerations 
+ * Enumerations
  */
 
 
- enum TelemetryDataType { 
-  Integer, 
-  Float, 
-  Boolean, 
-  String, 
+ enum TelemetryDataType {
+  Number,
+  Boolean,
+  String,
   Image
  }
 
 /**
  * Enum for how data should be represented
  */
-enum DisplayType { 
-  Graph = 0, 
-  Image = 1, 
+enum DisplayType {
+  Graph = 0,
+  Image = 1,
   Table = 2
 }
 
 
-enum GraphType { 
-  Pie, 
-  Line, 
+enum GraphType {
+  Pie,
+  Line,
   Bar
 }
 
-enum GroupType { 
-  Table, 
+enum GroupType {
+  Table,
   Graph
 }
 

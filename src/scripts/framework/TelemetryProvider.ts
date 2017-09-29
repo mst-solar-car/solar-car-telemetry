@@ -31,7 +31,6 @@ class TelemetryProvider implements ITelemetryProvider {
     this._data = {};
 
 
-    // Loop through each of the data items registered by this module
     for (let i = 0; i < moduleRegistration.Data.length; i++) {
       let dataRegistration = moduleRegistration.Data[i];
 
@@ -75,6 +74,41 @@ class TelemetryProvider implements ITelemetryProvider {
         };
       }
     }
+  }
+
+
+  /**
+   *
+   * @param registration data registration
+   */
+  public GetChartData(d: any): any {
+    return ko.computed(() => {
+      let data = d.Data();
+
+      if (data.length > 10) {
+        data = data.slice(data.length - 10);
+      }
+
+      // Get timestamps
+      let timestamps = data.map((v) => {
+        let date = new Date(v.Updated);
+
+        return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+       });
+      let values = data.map((v) => v.Value);
+
+      // Return the data object for the graph
+      return {
+          labels: timestamps,
+          datasets: [
+            {
+              label: d.Registration.Name,
+              backgroundColor: 'rgb(255, 99, 132)',
+              data: values
+            }
+          ]
+        };
+    });
   }
 
 
@@ -126,7 +160,7 @@ class TelemetryProvider implements ITelemetryProvider {
 
     let registration = this._data[key] as ITelemetryDataRegistration;
 
-    let newVal = { Value: value , Invalid: invalid, Updated: (new Date()).toISOString() }; // New value to add
+    let newVal = { Value: value , Invalid: invalid, Updated: (new Date()).toISOString()  }; // New value to add
 
     switch (registration.Display) {
       case DisplayType.Table:
