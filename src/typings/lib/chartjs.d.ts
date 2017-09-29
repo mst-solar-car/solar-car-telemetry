@@ -23,6 +23,7 @@ interface ChartDataSet {
     highlightFill?: string;
     highlightStroke?: string;
     backgroundColorHover?: string;
+    backgroundColor?: string;
 
     data: number[];
 }

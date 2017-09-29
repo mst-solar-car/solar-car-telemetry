@@ -9,7 +9,7 @@ class TelemetryProvider implements ITelemetryProvider {
 
   public Id: string;
   public Name: string;
-  public LatestValues: any; // Hashmap of observables key -> IDataValue<any>
+  public LatestValues: any; // Hashmap of observables key -> KnockoutObservableArray<IDataValue>
 
   private _registration: ITelemetryModuleRegistration;
 
@@ -43,10 +43,8 @@ class TelemetryProvider implements ITelemetryProvider {
       this._updateValue(dataRegistration.Key, (dataRegistration.Default != undefined ? dataRegistration.Default : ''), false);
     }
 
-
     // Initialize the module for getting data
     this._registration.Module.Load();
-
 
     // Start polling if needed
     if (this._registration.NeedsPolling) {
@@ -62,29 +60,31 @@ class TelemetryProvider implements ITelemetryProvider {
 
 
   /**
-   * Creates an array of a custom type specific for the UI
+   * Generator that yields ITelemetryDataDTO
    */
   public* GetDataValues(): Generator {
     for (let key in this.LatestValues) {
       if (this.LatestValues.hasOwnProperty(key) && this._data[key] != undefined) {
-        yield {
+        yield <ITelemetryDataDTO>{
           Key: key,
           Registration: this._data[key],
           Data: this.LatestValues[key]
         };
       }
     }
+
   }
 
 
   /**
-   *
+   * Returns data for a chart
    * @param registration data registration
    */
-  public GetChartData(d: any): any {
+  public GetChartData(dto: ITelemetryDataDTO): KnockoutComputed<LinearChartData> {
     return ko.computed(() => {
-      let data = d.Data();
+      let data = dto.Data(); // These creates a dependency in knockout so anytime this updates so will anything that uses data in this function
 
+      // Only keep 10 data points on the graph
       if (data.length > 10) {
         data = data.slice(data.length - 10);
       }
@@ -98,11 +98,11 @@ class TelemetryProvider implements ITelemetryProvider {
       let values = data.map((v) => v.Value);
 
       // Return the data object for the graph
-      return {
+      return <LinearChartData>{
           labels: timestamps,
           datasets: [
             {
-              label: d.Registration.Name,
+              label: dto.Registration.Name,
               backgroundColor: 'rgb(255, 99, 132)',
               data: values
             }
@@ -160,7 +160,7 @@ class TelemetryProvider implements ITelemetryProvider {
 
     let registration = this._data[key] as ITelemetryDataRegistration;
 
-    let newVal = { Value: value , Invalid: invalid, Updated: (new Date()).toISOString()  }; // New value to add
+    let newVal = <IDataValue>{ Value: value , Invalid: invalid, Updated: (new Date()).toISOString()  }; // New value to add
 
     switch (registration.Display) {
       case DisplayType.Table:
@@ -170,7 +170,6 @@ class TelemetryProvider implements ITelemetryProvider {
         }
 
         this.LatestValues[key].push(newVal);
-
         break;
 
       case DisplayType.Image:
@@ -179,7 +178,6 @@ class TelemetryProvider implements ITelemetryProvider {
         }
 
         this.LatestValues[key](newVal);
-
         break;
     }
 

@@ -5,5 +5,13 @@ interface ITelemetryProvider {
     Id: string;
     Name: string;
     GetDataValues(): Generator;
-    GetChartData(key: string): any;
+    GetChartData(data: any): any;
+}
+
+
+
+interface ITelemetryDataDTO {
+    Key: string;
+    Registration: ITelemetryDataRegistration;
+    Data: KnockoutObservableArray<IDataValue>;
 }

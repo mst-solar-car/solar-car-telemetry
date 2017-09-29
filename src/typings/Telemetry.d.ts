@@ -48,8 +48,8 @@ interface ITelemetryData {
   Value: any;
 }
 
-interface IDataValue<T> {
-  Value: T;
+interface IDataValue {
+  Value: any;
   Invalid: boolean;
   Updated: string;
 }
