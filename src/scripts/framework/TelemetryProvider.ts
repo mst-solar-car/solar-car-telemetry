@@ -80,7 +80,7 @@ class TelemetryProvider implements ITelemetryProvider {
       let timestamps = data.map((v) => {
         let date = new Date(v.Updated);
 
-        return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+        return date.getMinutes() + ":" + date.getSeconds();
        });
       let values = data.map((v) => v.Value);
 
@@ -104,7 +104,7 @@ class TelemetryProvider implements ITelemetryProvider {
    * data is published
    */
   private _monitorValue = (data: ITelemetryData) => {
-    console.log(data);
+    //console.log(data);
     if (this._dataRegistration[data.Key] == undefined) return;
 
     let registration = this._dataRegistration[data.Key] as ITelemetryDataRegistration;
@@ -158,7 +158,11 @@ class TelemetryProvider implements ITelemetryProvider {
           this.LatestValues[key] = ko.observableArray([]);
         }
 
-        this.LatestValues[key].push(newVal);
+        if (registration.Display == DisplayType.Graph)
+          this.LatestValues[key].push(newVal);
+        else
+          this.LatestValues[key].unshift(newVal); // Tables get data put into the beginning of the array
+
         break;
 
       case DisplayType.Image:

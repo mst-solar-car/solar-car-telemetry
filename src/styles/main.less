@@ -84,16 +84,27 @@ html, body {
       .data-table {
         font-size: 0.9em;
 
-        thead tr th{
-          text-align: center !important;
+        thead tr {
+          border-bottom: 2px solid @table-border-color;
+
+          th{
+            text-align: center !important;
+            padding: 0 10px;
+          }
         }
 
         tbody {
           tr {
             border-bottom: 1px solid @table-border-color;
+
+            td {
+              padding: 0 10px;
+              text-align: center;
+            }
           }
         }
       }
+
     }
   }
 
