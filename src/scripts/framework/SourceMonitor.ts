@@ -16,6 +16,7 @@ class SourceMonitor {
   private _errorCount: number = 0;
   private _pollingLock: boolean = false;
 
+  private _errorLimit:number = 10;
 
   constructor(original: any, pollingInterval: number, callback: (data: ITelemetryData) => void) {
     this._original = original;
@@ -65,7 +66,52 @@ class SourceMonitor {
       return;
     }
 
-    // TODO: Poll on set intervals
+    this._pollingEvent = setInterval(() => {
+      // Do not do anything if locked
+      if (this._pollingLock)
+        return;
+
+      // Check for too many errors
+      if (this._errorCount > this._errorLimit) {
+        PubSub.PublishError('Failed to get data from Poll() method ' + this._errorLimit + ' times, will stop attempting');
+        clearInterval(this._pollingEvent);
+        return;
+      }
+
+      this._pollingLock = true; // Lock polling
+
+      let result = this._original.Poll(); // Poll the object
+
+      // Handle no return value
+      if (result == undefined || result == null) {
+        this._pollingLock = false;
+        this._errorCount++;
+        PubSub.PublishWarning('Poll() method did not return a value');
+        return;
+      }
+
+      // Handle a promise being returned
+      if (result.then && typeof result.then == "function" && result.catch && typeof result.catch == "function") {
+        result.then((data) => {
+          this._receiveData(data);
+          this._errorCount = 0;
+          this._pollingLock = false;
+        })
+        .catch(() => {
+          this._errorCount++;
+          this._pollingLock = false;
+        });
+      }
+      else {
+        // Use as a regular value
+        this._receiveData(result);
+
+        this._pollingLock = false;
+        this._errorCount = 0;
+      }
+
+
+    }, this._pollingInterval);
   }
 
 
@@ -101,16 +147,7 @@ class SourceMonitor {
       connection.addEventListener('message', (e) => {
         try {
           let data = JSON.parse(e.data);
-          if (data.Key == undefined || data.Value == undefined)
-            throw data;
-
-          // Send to callback whenever possible
-          ASAP(() => {
-            this._callback({
-              Key: data.Key,
-              Value: data.Value
-            } as ITelemetryData);
-          });
+          this._receiveData(data);
         }
         catch (e) {
           PubSub.PublishError('Received malformed data from websocket', e);
@@ -128,7 +165,6 @@ class SourceMonitor {
       });
     }
     catch (e) {
-      console.error(e);
       PubSub.PublishError('Error in web socket connection', e);
     }
   }
@@ -143,6 +179,13 @@ class SourceMonitor {
       if (this._pollingLock)
         return;
 
+      // Stop polling if more than 10 errors
+      if (this._errorCount > this._errorLimit) {
+        PubSub.PublishError('Failed to get data from ' + this._original.Complete + ' ' + this._errorLimit + ' times, will stop attempting');
+        this._pollingLock = false;
+        clearInterval(this._pollingEvent);
+      }
+
       this._pollingLock = true; // Lock polling
 
       NetworkRequest(this._original.Complete)
@@ -150,47 +193,45 @@ class SourceMonitor {
           this._errorCount = 0; // Reset error count
           this._pollingLock = false; // Release lock
 
-          if (Array.isArray(parsedData)) {
-            // Verify each one is valid
-            for (let i = 0; i < parsedData.length; i++) {
-              let data = parsedData[i];
-
-              // Check if invalid
-              if (data.Key == undefined || data.Value == undefined) {
-                PubSub.Publish('Value in array result from ' + this._original.Complete + ' is not formatted as ITelemetryData');
-                continue;
-              }
-
-              // Not invalid, send to callback whenever possible
-              ASAP(() => {
-                this._callback({
-                  Key: data.Key,
-                  Value: data.Value
-                });
-              });
-
-            }
-          }
-          else {
-            PubSub.PublishError('Data from URL must be an array of ITelemetryData');
-          }
-
+          this._receiveData(parsedData);
         })
         .catch(() => {
           this._errorCount++;
           this._pollingLock = false; // Release lock
 
-          // Stop polling if more than 10 errors
-          if (this._errorCount > 10) {
-            PubSub.PublishError('Failed to get data from ' + this._original.Complete + ' 10 times, will stop attempting');
-            clearInterval(this._pollingEvent);
-          }
-          else {
-            PubSub.PublishError('Error completing network request to ' + this._original.Complete);
-          }
+          PubSub.PublishError('Error completing network request to ' + this._original.Complete);
         });
 
     }, this._pollingInterval);
+  }
+
+
+  /**
+   * Method for receing and validating data
+   * @param data data to handle
+   */
+  private _receiveData(data: any): void {
+    // Recursively call on array elements
+    if (Array.isArray(data)) {
+      for (let i = 0; i < data.length; i++) {
+        this._receiveData(data[i]);
+      }
+      return;
+    }
+
+    // Check if invalid
+    if (data.Key == undefined || data.Value == undefined) {
+      PubSub.Publish('Value in array result from ' + this._original.Complete + ' is not formatted as ITelemetryData');
+      return;
+    }
+
+    // Not invalid, send to callback whenever possible
+    ASAP(() => {
+      this._callback({
+        Key: data.Key,
+        Value: data.Value
+      });
+    });
   }
 
 
