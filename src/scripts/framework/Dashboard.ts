@@ -2,6 +2,7 @@ let ko: KnockoutStatic = require("knockout");
 
 import PubSub = require("framework/PubSub");
 
+import DashboardConfig = require("modules/DashboardConfig");
 
 /**
  * The Dashboard Class implements the dashboard screen
@@ -11,7 +12,7 @@ class Dashboard implements ITelemetryProvider {
   public Name: string;
   public Scope: string;
 
-  private _dataToShow = ["sample:sample-data-1"];
+  private _dataToShow = DashboardConfig;
 
   private _providers: any;
 
@@ -23,6 +24,8 @@ class Dashboard implements ITelemetryProvider {
     this.Id = 'dashboard';
     this.Scope = 'dashboard';
     this.Name = 'Dashboard';
+
+    console.log(DashboardConfig);
 
     this._providers = {};
 
