@@ -12,7 +12,6 @@
 
       <div class="nav-bar">
         <ul>
-          <li data-bind="click: ChangeView('dashboard'), css: { active: CurrentView() == 'dashboard' }" title="Dashboard">Dashboard</li>
           <!-- ko foreach: Providers -->
           <li data-bind="click: $parent.ChangeView($data.Id), text: $data.Name, css: { active: $parent.CurrentView() == $data.Id }, attr: { title: $data.Name }"></li>
           <!-- /ko -->
@@ -21,11 +20,9 @@
 
 
       <div class="data-view">
-        <!-- ko if: CurrentView() != 'dashboard' -->
           <!-- ko if: CurrentProvider() -->
           <div class="row" >
-
-              <!-- ko foreach: CurrentProvider().GetDataValues() -->
+            <!-- ko foreach: CurrentProvider().GetDataValues() -->
               <div class="col-sm-6">
                 <div class="data-container">
 
@@ -59,10 +56,8 @@
                 </div>
               </div>
             <!-- /ko -->
-
           </div>
           <!-- /ko -->
-        <!-- /ko -->
       </div>
 
       <div id="NotificationContainer"></div>

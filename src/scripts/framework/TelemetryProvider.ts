@@ -12,6 +12,7 @@ class TelemetryProvider implements ITelemetryProvider {
 
   public Id: string;
   public Name: string;
+  public Scope: string;
 
   private _registration: ITelemetryModuleRegistration;
 
@@ -25,6 +26,7 @@ class TelemetryProvider implements ITelemetryProvider {
    */
   constructor(moduleRegistration: ITelemetryModuleRegistration) {
     this.Id = Guid();
+    this.Scope = moduleRegistration.Key;
     this._registration = moduleRegistration;
     this.Name = this._registration.Name;
     this.LatestValues = {};
@@ -45,6 +47,23 @@ class TelemetryProvider implements ITelemetryProvider {
 
   }
 
+  /**
+   * Gets the value history of a single key
+   * @param key Key to get the value of
+   */
+  public GetDataValuesByKey(key: string): ITelemetryDataDTO {
+    if (this.LatestValues.hasOwnProperty(key) && this._dataRegistration[key] != undefined) {
+      return <ITelemetryDataDTO>{
+        Key: key,
+        Scope: this.Scope,
+        Registration: this._dataRegistration[key],
+        Data: this.LatestValues[key]
+      };
+    }
+
+    return null as ITelemetryDataDTO;
+  }
+
 
   /**
    * Generator that yields ITelemetryDataDTO
@@ -54,6 +73,7 @@ class TelemetryProvider implements ITelemetryProvider {
       if (this.LatestValues.hasOwnProperty(key) && this._dataRegistration[key] != undefined) {
         yield <ITelemetryDataDTO>{
           Key: key,
+          Scope: this.Scope,
           Registration: this._dataRegistration[key],
           Data: this.LatestValues[key]
         };
@@ -81,7 +101,7 @@ class TelemetryProvider implements ITelemetryProvider {
         let date = new Date(v.Updated);
 
         return date.getMinutes() + ":" + date.getSeconds();
-       });
+      });
       let values = data.map((v) => v.Value);
 
       // Return the data object for the graph
@@ -104,7 +124,6 @@ class TelemetryProvider implements ITelemetryProvider {
    * data is published
    */
   private _monitorValue = (data: ITelemetryData) => {
-    //console.log(data);
     if (this._dataRegistration[data.Key] == undefined) return;
 
     let registration = this._dataRegistration[data.Key] as ITelemetryDataRegistration;

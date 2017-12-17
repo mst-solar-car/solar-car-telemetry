@@ -5,6 +5,8 @@ import ModuleLoader = require("framework/ModuleLoader");
 import TelemetryProvider = require("framework/TelemetryProvider");
 import PubSub = require("framework/PubSub");
 
+import Dashboard = require("framework/Dashboard");
+
 let ko: KnockoutStatic = require("knockout");
 
 
@@ -29,6 +31,9 @@ class SolarCarTelemetry {
         this.Providers.push(new TelemetryProvider(modules[i]));
       }
 
+      // Register the dashboard
+      this.Providers.unshift(new Dashboard(this.Providers()));
+
       this.ChangeView('dashboard');
     });
 
@@ -45,13 +50,7 @@ class SolarCarTelemetry {
     if (id == this.CurrentView()) return; // Nothing to change
 
     let provider = this._findProviderWithId(id);
-
-    if (provider == null && id != 'dashboard')
-      return;
-
-    if (id != 'dashboard') {
-      this.CurrentProvider(provider);
-    }
+    this.CurrentProvider(provider);
 
     this.CurrentView(id);
   };

@@ -1,4 +1,5 @@
 let registration: ITelemetryModuleRegistration = {
+  Key: "sample",
   Name: "Sample Data",
   Source: "ws://localhost:1337",
   Data: [

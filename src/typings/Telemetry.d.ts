@@ -3,6 +3,7 @@
  */
 interface ITelemetryModuleRegistration {
   Name: string; // Name of the module (must be unique)
+  Key: string;
   PollingInterval?: number; // Optional interval to poll data at (in milliseconds; minimum: 500, maximum: 5000, default: 1000)
   Data: ITelemetryDataRegistration[]; // Array of the values that this telemetry module provides
   Source: any;
@@ -28,6 +29,7 @@ interface ITelemetryModule {
 interface ITelemetryDataRegistration {
   Name: string;
   Key: string; // Unique Key to identify data
+  Scope?: string;
   Description?: string; // Optional description
   DataType: TelemetryDataType_t; // Name of the type (int, string, float, boolean, etc)
   Units?: string; // Unit of this type,

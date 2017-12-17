@@ -27,7 +27,7 @@ class ModuleLoader implements IModuleLoader {
     require(RegisteredModules, (...modules: ITelemetryModuleRegistration[]) => {
       // Add each module to the cache
       for (let i = 0; i < modules.length; i++) {
-        this._moduleCache[modules[i].Name] = this._setDefaults(modules[i]);
+        this._moduleCache[modules[i].Key] = this._setDefaults(modules[i]);
       }
 
       dfd.Resolve(modules);
@@ -41,7 +41,7 @@ class ModuleLoader implements IModuleLoader {
 
   /**
    * Resolves a specific module based on name
-   * @param name Name of the module to resolve
+   * @param key Key of the module to resolve
    */
   public Resolve(name: string): ITelemetryModuleRegistration {
     // Pull from the cache
@@ -63,6 +63,10 @@ class ModuleLoader implements IModuleLoader {
    */
   private _setDefaults(module: ITelemetryModuleRegistration): ITelemetryModuleRegistration {
     for (let i = module.Data.length - 1; i >= 0; i--) {
+      // Give the data a scope
+      if (module.Data[i].Scope == undefined)
+        module.Data[i].Scope = module.Key;
+
       if (module.Data[i].Display == undefined)
         module.Data[i].Display = DisplayType.Graph;
 
